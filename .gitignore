@@ -1,2 +1,4 @@
 /code/discord-bot/.env
 /code/discord-bot/target/
+/code/discord-bot/.idea/
+/code/discord-bot/bot.db
