@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YouTube Summary</title>
+    <style>
+        body {
+            width: 350px;
+            padding: 20px;
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #FFFFFF; /* Light background for both modes */
+            color: #000000; /* Black text for readability */
+        }
+        h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #000000;
+        }
+        #summarizeButton {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            background-color: #FF0000; /* YouTube red button color */
+            color: #FFFFFF;
+            transition: background-color 0.3s;
+        }
+        #summarizeButton:hover {
+            background-color: #CC0000; /* Darker red for hover */
+        }
+        #loading {
+            display: none;
+            font-style: italic;
+            text-align: center;
+            color: #000000;
+        }
+        #summary {
+            white-space: pre-wrap;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: #F9F9F9;
+            color: #000000;
+        }
+        #errorMessage {
+            text-align: center;
+            margin-top: 10px;
+            color: #FF0000; /* Red to indicate error */
+            font-weight: bold;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<h2>YouTube Video Summary</h2>
+<button id="summarizeButton">Generate Summary</button>
+<div id="loading">Summarizing...</div>
+<div id="summary"></div>
+<div id="errorMessage"></div>
+<script src="popup.js"></script>
+</body>
+</html>
