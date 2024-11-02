@@ -64,4 +64,3 @@ transcript = get_summary("https://www.youtube.com/watch?v=cSw61XmtsNo")
         
 
 
-
