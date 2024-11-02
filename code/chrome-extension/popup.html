@@ -7,51 +7,52 @@
             width: 350px;
             padding: 20px;
             font-family: 'Roboto', Arial, sans-serif;
-            background-color: #E6F2F8; /* Light blue for background to match Endress+Hauser corporate colors */
-            color: #003B5C; /* Darker blue for good contrast */
+            background-color: #FFFFFF; /* Light background for both modes */
+            color: #000000; /* Black text for readability */
         }
         h2 {
             font-size: 1.5em;
             margin-bottom: 20px;
             text-align: center;
-            color: #005EB8; /* Endress+Hauser blue */
+            color: #000000;
         }
         #summarizeButton {
             display: block;
             width: 100%;
             padding: 12px;
             margin-bottom: 20px;
-            background-color: #A3006E; /* Endress+Hauser magenta */
-            color: #fff;
             border: none;
             border-radius: 5px;
             font-size: 1em;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            background-color: #FF0000; /* YouTube red button color */
+            color: #FFFFFF;
+            transition: background-color 0.3s;
         }
         #summarizeButton:hover {
-            background-color: #7A0052; /* Darker magenta for hover */
+            background-color: #CC0000; /* Darker red for hover */
         }
         #loading {
             display: none;
             font-style: italic;
             text-align: center;
-            color: #003B5C; /* Darker blue for visibility */
+            color: #000000;
         }
         #summary {
             white-space: pre-wrap;
-            background-color: #FFFFFF;
             padding: 15px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             max-height: 200px;
             overflow-y: auto;
-            color: #003B5C; /* Darker blue for consistency */
+            background-color: #F9F9F9;
+            color: #000000;
         }
         #errorMessage {
-            color: #A30000; /* Red to indicate error */
             text-align: center;
             margin-top: 10px;
+            color: #FF0000; /* Red to indicate error */
+            font-weight: bold;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">

@@ -1,12 +1,9 @@
 {
   "manifest_version": 3,
   "name": "YouTube Summary Extension",
-  "version": "1.1",
-  "description": "Summarize YouTube videos quickly using an external API.",
+  "version": "1.0",
+  "description": "Summarize YouTube videos quickly.",
   "permissions": ["activeTab", "scripting"],
-  "host_permissions": [
-    "https://api.example.com/*"
-  ],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
