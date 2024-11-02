@@ -10,12 +10,18 @@
         }
         #summary {
             white-space: pre-wrap;
+            margin-top: 10px;
+        }
+        #loading {
+            display: none;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
 <h2>Video Summary</h2>
 <button id="summarizeButton">Summarize Video</button>
+<div id="loading">Summarizing...</div>
 <div id="summary"></div>
 <script src="popup.js"></script>
 </body>
