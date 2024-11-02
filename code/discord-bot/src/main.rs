@@ -1,11 +1,12 @@
 use std::env;
 use dotenv::dotenv;
-use reqwest;
 use regex::Regex;
 
 use serenity::async_trait;
 use serenity::model::channel::Message;
 use serenity::prelude::*;
+use crate::db::whitelist::add_or_remove_from_whitelist;
+
 struct Handler;
 
 mod db;
@@ -32,30 +33,19 @@ impl EventHandler for Handler {
         }
 
         else if msg.content.starts_with(".whitelist") {
-            match db::whitelist::add(msg.channel_id.to_string()).await {
-                Ok(_) => {
-                     msg.channel_id.say(&ctx.http, "Added this channel to whitelist")
-                         .await
-                         .expect("Cant send message");
-                }
-                Err(_) => {
-                    msg.channel_id.say(&ctx.http, "Could not add this channel to whitelist")
-                        .await
-                        .expect("Cant send message");
-                }
-            }
-
+            add_or_remove_from_whitelist(&ctx, &msg).await
         }
     }
 }
 
 #[tokio::main]
 async fn main() {
+    // create database
+    db::whitelist::create_table_whitelist().expect("Failed to create whitelist table");
+    db::users::create_users_table().expect("Failed to create users table");
+    db::usage_log::create_usage_log_table().expect("Failed to create usage log table");
+
     dotenv().ok();
-
-    db::whitelist::create_table_whitelist().await.expect("Failed to create whitelist");
-
-    // Login with a bot token from the environment
     let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
     // Set gateway intents, which decides what events the bot will be notified about
     let intents = GatewayIntents::GUILD_MESSAGES
