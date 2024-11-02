@@ -4,10 +4,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const loadingElement = document.getElementById("loading");
     const summaryElement = document.getElementById("summary");
 
+    // Initially hide the summary element
+    summaryElement.style.display = "none";
+
     // Add click event listener to the summarize button
     summarizeButton.addEventListener("click", async () => {
-        // Clear previous summary and show loading indicator
+        // Clear previous summary, hide it, and show loading indicator
         summaryElement.textContent = "";
+        summaryElement.style.display = "none";
         loadingElement.style.display = "block";
 
         try {
@@ -18,15 +22,18 @@ document.addEventListener("DOMContentLoaded", () => {
             // Validate if the current tab is a YouTube video page
             if (!isValidYouTubeUrl(videoUrl)) {
                 summaryElement.textContent = "Please open a YouTube video.";
+                summaryElement.style.display = "block";
                 return;
             }
 
             // Request summary from the API
             const summary = await fetchVideoSummary(videoUrl);
             summaryElement.textContent = summary;
+            summaryElement.style.display = "block";
         } catch (error) {
             console.error("Error summarizing the video:", error);
             summaryElement.textContent = "Error: Could not summarize the video.";
+            summaryElement.style.display = "block";
         } finally {
             // Hide the loading indicator
             loadingElement.style.display = "none";
@@ -40,20 +47,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Function to fetch video summary from the external API
     async function fetchVideoSummary(videoUrl) {
-        // Dummy response for now
-        return "This is a dummy summary. The actual summary will be provided once the API endpoint is implemented.";
-
-        const payload = {
-            link: videoUrl,
-            type: "summarize"
-        };
-
-        const response = await fetch("https://api.example.com/summarize", {
-            method: "POST",
+        // Public example endpoint for demonstration purposes
+        const response = await fetch("https://jsonplaceholder.typicode.com/posts/1", {
+            method: "GET",
             headers: {
                 "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
+            }
         });
 
         if (!response.ok) {
@@ -61,6 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const data = await response.json();
-        return data.summary;
+        return data.body;
     }
 });
