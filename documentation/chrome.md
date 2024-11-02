@@ -6,4 +6,5 @@ Enable Developer mode (top right corner).
 Click Load unpacked and select your project folder.
 
 
-
+Deployment: 
+https://developer.chrome.com/docs/webstore
