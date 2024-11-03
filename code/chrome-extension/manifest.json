@@ -1,9 +1,15 @@
 {
   "manifest_version": 3,
-  "name": "YouTube Summary Extension",
+  "name": "Too Long!",
   "version": "1.0",
   "description": "Summarize YouTube videos quickly.",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://baselhack-backend-c16cb02c396d.herokuapp.com/*"
+  ],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -22,5 +28,8 @@
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
+  },
+  "externally_connectable": {
+    "matches": ["*://baselhack-backend-c16cb02c396d.herokuapp.com/*"]
   }
 }

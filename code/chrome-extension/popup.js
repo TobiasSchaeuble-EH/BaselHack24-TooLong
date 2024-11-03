@@ -47,19 +47,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Function to fetch video summary from the external API
     async function fetchVideoSummary(videoUrl) {
-        // Public example endpoint for demonstration purposes
-        const response = await fetch("https://jsonplaceholder.typicode.com/posts/1", {
-            method: "GET",
+        const response = await fetch("https://ideal-causal-halibut.ngrok-free.app/summarize", {
+            method: "POST",
             headers: {
                 "Content-Type": "application/json"
-            }
+            },
+            body: JSON.stringify({ video_id: videoUrl })
         });
 
         if (!response.ok) {
             throw new Error("Failed to fetch summary from the API");
         }
 
+        console.log()
         const data = await response.json();
-        return data.body;
+        return data.summary;
     }
 });
