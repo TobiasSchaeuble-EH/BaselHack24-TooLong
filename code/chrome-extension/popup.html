@@ -10,6 +10,16 @@
             background-color: #FFFFFF; /* Light background for both modes */
             color: #000000; /* Black text for readability */
         }
+        .icon-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .icon {
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+        }
         h2 {
             font-size: 1.5em;
             margin-bottom: 20px;
@@ -59,6 +69,14 @@
 </head>
 <body>
 <h2>YouTube Video Summary</h2>
+<div class="icon-container">
+    <img src="icons/icon16.png" id="icon1" class="icon" alt="Icon 1">
+    <img src="icons/icon48.png" id="icon2" class="icon" alt="Icon 2">
+    <img src="icons/icon128.png" id="icon3" class="icon" alt="Icon 3">
+    <img src="icons/icon16.png" id="icon4" class="icon" alt="Icon 1">
+    <img src="icons/icon48.png" id="icon5" class="icon" alt="Icon 2">
+    <img src="icons/icon128.png" id="icon6" class="icon" alt="Icon 3">
+</div>
 <button id="summarizeButton">Generate Summary</button>
 <div id="loading">Summarizing...</div>
 <div id="summary"></div>
