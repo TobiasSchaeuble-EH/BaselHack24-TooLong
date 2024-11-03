@@ -1,6 +1,6 @@
-use rusqlite::{params, Connection, Result};
-use chrono::Utc;
 use crate::db::DB_FILENAME;
+use chrono::Utc;
+use rusqlite::{params, Connection, Result};
 
 pub fn create_usage_log_table() -> Result<()> {
     let conn = Connection::open(DB_FILENAME)?;

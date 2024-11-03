@@ -1,16 +1,16 @@
-use std::env;
 use dotenv::dotenv;
 use regex::Regex;
+use std::env;
 
+use crate::db::whitelist::add_or_remove_from_whitelist;
 use serenity::async_trait;
 use serenity::model::channel::Message;
 use serenity::prelude::*;
-use crate::db::whitelist::add_or_remove_from_whitelist;
 
 struct Handler;
 
-mod db;
 mod api_commands;
+mod db;
 
 #[async_trait]
 impl EventHandler for Handler {
@@ -21,18 +21,16 @@ impl EventHandler for Handler {
 
         if msg.content.starts_with("https:") {
             //Check if channel is in whitelist
-            if !db::whitelist::is_channel_in_whitelist(&msg.channel_id.to_string()).await.unwrap() {
+            if !db::whitelist::is_channel_in_whitelist(&msg.channel_id.to_string())
+                .await
+                .unwrap()
+            {
                 return;
             }
             api_commands::send_summarize(yt_url, &ctx, &msg).await;
-        }
-
-        else if msg.content.starts_with(".summarize") {
+        } else if msg.content.starts_with(".summarize") {
             api_commands::send_summarize(yt_url, &ctx, &msg).await;
-
-        }
-
-        else if msg.content.starts_with(".whitelist") {
+        } else if msg.content.starts_with(".whitelist") {
             add_or_remove_from_whitelist(&ctx, &msg).await
         }
     }
@@ -53,8 +51,10 @@ async fn main() {
         | GatewayIntents::MESSAGE_CONTENT;
 
     // Create a new instance of the Client, logging in as a bot.
-    let mut client =
-        Client::builder(&token, intents).event_handler(Handler).await.expect("Err creating client");
+    let mut client = Client::builder(&token, intents)
+        .event_handler(Handler)
+        .await
+        .expect("Err creating client");
 
     // Start listening for events by starting a single shard
     if let Err(why) = client.start().await {

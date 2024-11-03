@@ -1,6 +1,6 @@
+use crate::db::DB_FILENAME;
 use rusqlite::{params, Connection, Result};
 use serenity::all::{Context, Message};
-use crate::db::DB_FILENAME;
 
 pub fn create_table_whitelist() -> Result<()> {
     let conn = Connection::open(DB_FILENAME)?;
@@ -51,47 +51,44 @@ fn is_in_whitelist(conn: &Connection, channel_id: &str) -> Result<bool> {
     Ok(rows.next()?.is_some())
 }
 
-
 pub async fn add_or_remove_from_whitelist(ctx: &Context, msg: &Message) {
-    let conn = Connection::open(DB_FILENAME)
-        .expect("Failed to connect to database");
+    let conn = Connection::open(DB_FILENAME).expect("Failed to connect to database");
     let channel_id = msg.channel_id.to_string();
 
     match is_in_whitelist(&conn, &channel_id) {
-        Ok(true) => {
-            match remove_from_whitelist(&conn, &channel_id) {
-                Ok(_) => {
-                    msg.channel_id.say(&ctx.http, "Removed this channel from whitelist")
-                        .await
-                        .expect("Can't send message");
-                }
-                Err(_) => {
-                    msg.channel_id.say(
-                        &ctx.http, "Could not remove this channel from whitelist")
-                        .await
-                        .expect("Can't send message");
-                }
+        Ok(true) => match remove_from_whitelist(&conn, &channel_id) {
+            Ok(_) => {
+                msg.channel_id
+                    .say(&ctx.http, "Removed this channel from whitelist")
+                    .await
+                    .expect("Can't send message");
             }
-        }
-        Ok(false) => {
-            match add_to_whitelist(&conn, &channel_id) {
-                Ok(_) => {
-                    msg.channel_id.say(&ctx.http, "Added this channel to whitelist")
-                        .await
-                        .expect("Can't send message");
-                }
-                Err(_) => {
-                    msg.channel_id.say(&ctx.http, "Could not add this channel to whitelist")
-                        .await
-                        .expect("Can't send message");
-                }
+            Err(_) => {
+                msg.channel_id
+                    .say(&ctx.http, "Could not remove this channel from whitelist")
+                    .await
+                    .expect("Can't send message");
             }
-        }
+        },
+        Ok(false) => match add_to_whitelist(&conn, &channel_id) {
+            Ok(_) => {
+                msg.channel_id
+                    .say(&ctx.http, "Added this channel to whitelist")
+                    .await
+                    .expect("Can't send message");
+            }
+            Err(_) => {
+                msg.channel_id
+                    .say(&ctx.http, "Could not add this channel to whitelist")
+                    .await
+                    .expect("Can't send message");
+            }
+        },
         Err(_) => {
-            msg.channel_id.say(&ctx.http, "Error checking whitelist status")
+            msg.channel_id
+                .say(&ctx.http, "Error checking whitelist status")
                 .await
                 .expect("Can't send message");
         }
     }
 }
-

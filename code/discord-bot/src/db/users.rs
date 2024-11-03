@@ -1,5 +1,5 @@
-use rusqlite::{params, Connection, Result, OptionalExtension};
 use crate::db::DB_FILENAME;
+use rusqlite::{params, Connection, OptionalExtension, Result};
 
 pub fn create_users_table() -> Result<()> {
     let conn = Connection::open(DB_FILENAME)?;
@@ -14,12 +14,12 @@ pub fn create_users_table() -> Result<()> {
     Ok(())
 }
 
-
 pub async fn update_or_add_user(user_id: u64, username: &str) -> Result<()> {
     let conn = Connection::open(DB_FILENAME)?;
     let mut stmt = conn.prepare("SELECT usages FROM users WHERE user_id = ?1")?;
-    let user_exists: Option<u64> = stmt.query_row(params![user_id],
-                                                  |row| row.get(0)).optional()?;
+    let user_exists: Option<u64> = stmt
+        .query_row(params![user_id], |row| row.get(0))
+        .optional()?;
 
     match user_exists {
         Some(_) => {
