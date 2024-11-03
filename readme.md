@@ -2,6 +2,8 @@
 
 **Too Long!** is a cross-platform media summarization tool developed by the **EAGER** team during BaselHack24. It simplifies video content consumption by providing real-time summaries for YouTube videos across multiple platforms.
 
+![BaselHack24](toolong.png)
+
 ## 💡 What We Built
 
 - **Backend**: A central backend that powers all platforms.
