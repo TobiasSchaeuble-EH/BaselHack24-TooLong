@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Function to fetch video summary from the external API
     async function fetchVideoSummary(videoUrl) {
-        const response = await fetch("https://baselhack-backend-c16cb02c396d.herokuapp.com/dummy_summarize", {
+        const response = await fetch("https://ideal-causal-halibut.ngrok-free.app/summarize", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
