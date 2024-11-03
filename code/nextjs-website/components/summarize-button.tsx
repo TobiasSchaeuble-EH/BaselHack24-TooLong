@@ -6,7 +6,7 @@ export default function SummarizeButton() {
   return (
     <>
       <Link
-        href="./summarize"
+        href="../summarize"
       >
         <Button className="flex items-center gap-2" size={"sm"}>
             <Plus />
