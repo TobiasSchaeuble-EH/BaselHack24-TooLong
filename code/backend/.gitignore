@@ -1,0 +1,13 @@
+# Python files
+__pycache__/
+.venv/
+venv/
+
+# Django files
+staticfiles/
+db.sqlite3
+
+# macOS files
+.DS_Store
+.env
+.vercel

@@ -1,0 +1,7 @@
+openai
+antropic
+youtube-transcript-api
+flask
+flask_cors
+python-dotenv
+gunicorn
