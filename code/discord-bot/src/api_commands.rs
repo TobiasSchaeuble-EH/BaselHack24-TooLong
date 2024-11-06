@@ -5,7 +5,10 @@ use serde_json::json;
 use serenity::all::{Context, Message};
 
 const SUMMARIZE_ENDPOINT: &str =
-    "https://ideal-causal-halibut.ngrok-free.app/summarize";
+    "http://127.0.0.1:5000/summarize";
+
+    const MAX_MESSAGE_LENGTH: usize = 2000;
+
 
 async fn send_api_request(endpoint: String, url: String) -> Option<String> {
     let client = ReqClient::new();
@@ -23,7 +26,7 @@ async fn send_api_request(endpoint: String, url: String) -> Option<String> {
                     Ok(json) => {
                         if let Some(summary) = json.get("summary").and_then(|s| s.as_str()) {
                             println!("Request successful: {}", summary);
-                            Some(summary.to_string())
+                            return Some(summary.to_string())
                         } else {
                             println!("Summary key not found in response");
                             None
@@ -70,7 +73,24 @@ pub async fn send_summarize(yt_url: Option<&&str>, ctx: &Context, msg: &Message)
     }
 
     // Check if user is in the database and update or add them
-    if let Err(why) = msg.channel_id.say(&ctx.http, response).await {
-        println!("Error sending message: {why:?}");
+    send_long_message(msg, ctx, &response).await
+}
+
+async fn send_long_message(msg: &Message, ctx: &Context, response: &str) {
+    let mut start = 0;
+    let response_length = response.len();
+
+    while start < response_length {
+        // Determine the end index for the current chunk
+        let end = std::cmp::min(start + MAX_MESSAGE_LENGTH, response_length);
+        let chunk = &response[start..end];
+
+        // Send the chunk
+        if let Err(why) = msg.channel_id.say(&ctx.http, chunk).await {
+            println!("Error sending message: {why:?}");
+        }
+
+        // Move the start index to the end of the current chunk
+        start = end;
     }
 }

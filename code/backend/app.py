@@ -1,29 +1,22 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from youtube_transcript_api import YouTubeTranscriptApi
-from openai import OpenAI
-from dotenv import load_dotenv
 import os
 import logging
 from typing import Optional, List, Dict
-from anthropic import Anthropic
+import subprocess
 
 # Initialize logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+
 class TranscriptSummarizerApp:
     def __init__(self):
         # Load environment variables
-        load_dotenv()
-        
-        # Initialize Flask app
         self.app = Flask(__name__)
         CORS(self.app)  # Enable CORS for all domains
-        
-        # Initialize OpenAI client
-        self.openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        
+
         # Register routes
         self._register_routes()
 
@@ -69,15 +62,7 @@ class TranscriptSummarizerApp:
             return jsonify({"error": "Internal server error"}), 500
 
     def _get_transcript(self, video_id: str) -> Optional[List[Dict]]:
-        """
-        Retrieve transcript for a YouTube video.
-        
-        Args:
-            video_id: YouTube video ID
-            
-        Returns:
-            List of transcript segments or None if retrieval fails
-        """
+        """Retrieve transcript for a YouTube video."""
         logger.debug(f"Getting transcript for video ID: {video_id}")
         try:
             return YouTubeTranscriptApi.get_transcript(video_id, languages=["en"])
@@ -86,57 +71,42 @@ class TranscriptSummarizerApp:
             return None
 
     def _get_summary(self, transcript: List[Dict]) -> Optional[str]:
-        """
-        Generate summary of transcript using GPT-4.
-        If USE_CLAUDE is set to True in environment, it will use Claude instead.
-        
-        Args:
-            transcript: List of transcript segments
-            
-        Returns:
-            Generated summary or None if summarization fails
-        """
+        """Generate summary of transcript using Ollama."""
         try:
             prompt = self._generate_prompt(transcript)
-            
-            # Uncomment and set USE_CLAUDE=true in .env to use Claude instead of GPT-4
-            """
-            if os.getenv("USE_CLAUDE") == "true":
-                anthropic_client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
-                response = anthropic_client.messages.create(
-                    max_tokens=1024,
-                    messages=[{
-                        "role": "user",
-                        "content": prompt
-                    }],
-                    model="claude-3-haiku-20240307"
-                )
-                return response.content
-            """
-            
-            # Default to OpenAI GPT-4
-            response = self.openai_client.chat.completions.create(
-                model="gpt-4",
-                messages=[
-                    {"role": "user", "content": prompt}
-                ]
+            logger.debug(f"Generated prompt for Ollama: {prompt}")
+
+            # Sanitize the prompt to remove problematic characters
+            sanitized_prompt = self._sanitize_prompt(prompt)
+
+            # Run the Ollama command
+            result = subprocess.run(
+                ["ollama", "run", "qwen2.5:3b"],
+                input=sanitized_prompt,
+                text=True,
+                capture_output=True,
+                encoding='utf-8'  # Ensure the output is handled as UTF-8
             )
-            return response.choices[0].message.content
+
+            if result.returncode != 0:
+                logger.error(f"Ollama command failed: {result.stderr}")
+                return None
+            logger.info(f'success: {result}')
+            return result.stdout.strip()
         except Exception as e:
             logger.error(f"Failed to generate summary: {str(e)}")
             return None
 
+    def _sanitize_prompt(self, prompt: str) -> str:
+        """Remove or convert problematic characters from the prompt."""
+        # Replace non-printable characters with a space or remove them
+        sanitized = ''.join(char if char.isprintable() else ' ' for char in prompt)
+        # Encode and decode to handle special characters
+        return sanitized.encode('utf-8', 'replace').decode('utf-8')
+
     @staticmethod
     def _generate_prompt(transcript: List[Dict]) -> str:
-        """
-        Generate prompt for GPT-4 from transcript.
-        
-        Args:
-            transcript: List of transcript segments
-            
-        Returns:
-            Formatted prompt string
-        """
+        """Generate prompt for Ollama from transcript."""
         prompt = (
             "Please generate a concise summary for the following video transcript. "
             "Provide only the summary, with no introductory or concluding remarks:"
@@ -144,13 +114,14 @@ class TranscriptSummarizerApp:
         transcript_text = "\n".join(entry['text'] for entry in transcript)
         return f"{prompt}\n{transcript_text}"
 
+
 def create_app():
     """Create and configure the application."""
     summarizer = TranscriptSummarizerApp()
     return summarizer.app
 
+
 if __name__ == '__main__':
     app = create_app()
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
-    
