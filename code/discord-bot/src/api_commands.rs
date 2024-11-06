@@ -1,16 +1,22 @@
 use crate::db::usage_log::add_usage_log;
 use crate::db::users::update_or_add_user;
 use reqwest::Client as ReqClient;
+use serde_json::json;
 use serenity::all::{Context, Message};
 
 const SUMMARIZE_ENDPOINT: &str =
-    "https://baselhack-backend-c16cb02c396d.herokuapp.com/dummy_summarize";
+    "https://ideal-causal-halibut.ngrok-free.app/summarize";
 
 async fn send_api_request(endpoint: String, url: String) -> Option<String> {
     let client = ReqClient::new();
-    let payload = format!(r#"{{"video_id": "{}"}}"#, url);
+    let payload = json!({ "video_id": url }).to_string();  // Create JSON payload
 
-    match client.post(&endpoint).body(payload).send().await {
+    match client.post(&endpoint)
+        .header("Content-Type", "application/json")  // Set JSON content type header
+        .body(payload)
+        .send()
+        .await
+    {
         Ok(response) => {
             if response.status().is_success() {
                 match response.json::<serde_json::Value>().await {
